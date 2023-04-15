@@ -1,11 +1,11 @@
 
+
 class NotionConnection {
   constructor (token){
     this.token = token;
   }
 
   call (method, url, payload) {
-  /* adapted from  https://max-brawer.medium.com/update-notion-databases-from-a-google-sheet-with-apps-script-c9a95df74c97 */
     let options = {
       "method": method,
       headers: {
@@ -16,20 +16,28 @@ class NotionConnection {
     "payload": JSON.stringify(payload),
     "redirect": "follow"
     };
-    UrlFetchApp.fetch(url, options);
+    return JSON.parse(UrlFetchApp.fetch(url, options).getContentText());
   }
 
   patch (url, payload) {
-    this.call("patch", url, payload);
+    return this.call("patch", url, payload);
+  }
+
+  post (url, payload) {
+    return this.call("post", url, payload);
   }
 }
 
 class NotionDatabase {
-  constructor (id){
+  constructor (connection, id){
+    this.connection = connection;
     this.id = id;
   }
 
-  listPages() {
+  getPages() {
+    let url = `https://api.notion.com/v1/databases/${this.id}/query`;
+    let result = this.connection.post(url, {});
+    return result["results"];
   }
 }
 
@@ -41,21 +49,29 @@ class NotionPage {
   }
 
   setProp(prop, value) {
-  
-  let props = {
-    "properties": {
-    [prop]: {
-     //in the case of a text field:
-      "rich_text": [{
-        "text": {
-          "content": value
-  }}]}}};
+  /* adapted from  https://max-brawer.medium.com/update-notion-databases-from-a-google-sheet-with-apps-script-c9a95df74c97 */
+   let props = {
+      "properties": {
+     [prop]: {
+      //in the case of a text field:
+       "rich_text": [{
+          "text": {
+            "content": value
+      }}]}}};
 
-  let url = 'https://api.notion.com/v1/pages/'+this.pageId;
-  this.connection.patch(url, props);
+    let url = 'https://api.notion.com/v1/pages/'+this.pageId;
+    return this.connection.patch(url, props);
   }
+
+
 }
 
-(new NotionPage(new NotionConnection(NOTION_TOKEN), "6518ff1e-be67-4415-9159-76c8fb7f4a7f")).setProp("cats", "cat")
+class NotionPageInfo {
+  constructor(data) {
+    this.data = data;
+  }
 
-
+  created_time() {
+    return this.data["created_time"];
+  }
+}
