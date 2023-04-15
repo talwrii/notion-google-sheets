@@ -3,8 +3,11 @@ Library and functions to interact with notion from the online browser [google sh
 
 ## Granting access
 Notion access is granted at the *database* level. 
-
 See [notion docs](https://www.notion.so/help/create-integrations-with-the-notion-api) to create an integration.
+
+## Usage
+
+Copy-and-paste notiong.gs into your sheets file. There is a mechanism to support libraries in google sheets, this is not supported yet.
 
 ## Feature completeness
 This library is incomplete, however it shouldn't be too hard to write your own call if you have coding knowledge. See the [official REST api documentation](https://developers.notion.com/reference/intro).
