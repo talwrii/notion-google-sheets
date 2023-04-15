@@ -30,12 +30,7 @@ class NotionDatabase {
   }
 
   listPages() {
-
-
   }
-
-
-
 }
 
 
@@ -58,9 +53,7 @@ class NotionPage {
 
   let url = 'https://api.notion.com/v1/pages/'+this.pageId;
   this.connection.patch(url, props);
-}
-
-
+  }
 }
 
 (new NotionPage(new NotionConnection(NOTION_TOKEN), "6518ff1e-be67-4415-9159-76c8fb7f4a7f")).setProp("cats", "cat")
